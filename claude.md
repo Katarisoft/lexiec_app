@@ -163,7 +163,16 @@ flutter run                # emulador/dispositivo
 flutter build apk --release
 ```
 
-Backend (si es propio): `<comandos exactos para levantarlo, p. ej. docker compose up -d>`
+Backend (propio, repositorio `lexiec_ia`; producción en `https://lexiec.katarisoft.com/api/v1`):
+
+```bash
+cd lexiec_ia
+./scripts/setup.sh                 # venv, .env, PostgreSQL + Qdrant + Ollama, modelos
+cp /ruta/*.pdf documentos/ && .venv/bin/python -m app.ingest
+./scripts/run_dev.sh               # API en http://127.0.0.1:8010 (emulador: http://10.0.2.2:8010)
+```
+
+App contra el backend local: `cp .env.example .env && flutter run --dart-define-from-file=.env`
 
 
 Después de cualquier cambio de código ejecuta `flutter analyze` y `flutter test`.
