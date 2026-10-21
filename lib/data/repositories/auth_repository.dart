@@ -54,6 +54,18 @@ class AuthRepository {
     }
   }
 
+  /// Cambia la clave y guarda los tokens nuevos (los anteriores dejan de servir).
+  Future<void> cambiarClave(String actual, String nueva) async {
+    final tokens = await _remoto.cambiarClave(actual, nueva);
+    await _tokens.guardar(access: tokens.accessToken, refresh: tokens.refreshToken);
+  }
+
+  /// Elimina la cuenta en el servidor y borra los tokens del dispositivo.
+  Future<void> eliminarCuenta(String clave) async {
+    await _remoto.eliminarCuenta(clave);
+    await _tokens.borrar();
+  }
+
   Future<bool> bienvenidaVista() => _preferencias.bienvenidaVista();
 
   Future<void> marcarBienvenidaVista() => _preferencias.marcarBienvenidaVista();

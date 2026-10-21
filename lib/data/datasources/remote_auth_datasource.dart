@@ -47,6 +47,20 @@ class RemoteAuthDatasource {
     return Perfil.fromJson(r.data!);
   });
 
+  /// `POST /auth/cambiar-clave` → nuevo par de tokens; las demás sesiones quedan cerradas.
+  Future<TokensSesion> cambiarClave(String actual, String nueva) => ApiClient.ejecutar(() async {
+    final r = await _api.dio.post<Map<String, dynamic>>(
+      '/auth/cambiar-clave',
+      data: {'clave_actual': actual, 'clave_nueva': nueva},
+    );
+    return TokensSesion.fromJson(r.data!);
+  });
+
+  /// `POST /auth/eliminar-cuenta` → 204. Borra la cuenta y sus conversaciones (permanente).
+  Future<void> eliminarCuenta(String clave) => ApiClient.ejecutar(() async {
+    await _api.dio.post<void>('/auth/eliminar-cuenta', data: {'clave': clave});
+  });
+
   /// `POST /auth/cerrar-sesion`: revoca la sesión de este dispositivo (204 siempre).
   Future<void> cerrarSesion(String refreshToken) => ApiClient.ejecutar(() async {
     await _api.dio.post<void>('/auth/cerrar-sesion', data: {'refresh_token': refreshToken});
