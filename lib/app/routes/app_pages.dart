@@ -1,18 +1,18 @@
 import 'package:get/get.dart';
-import '../bindings/cuenta_bindings.dart';
-import '../../screens/perfil/perfil_screen.dart';
-import '../../screens/normas/normas_screen.dart';
-import '../../screens/eliminar_cuenta/eliminar_cuenta_screen.dart';
-import '../../screens/cambiar_clave/cambiar_clave_screen.dart';
 
 import '../../screens/bienvenida/bienvenida_screen.dart';
+import '../../screens/cambiar_clave/cambiar_clave_screen.dart';
 import '../../screens/consulta/consulta_screen.dart';
 import '../../screens/consultas/consultas_screen.dart';
+import '../../screens/eliminar_cuenta/eliminar_cuenta_screen.dart';
 import '../../screens/inicio/inicio_screen.dart';
 import '../../screens/login/login_screen.dart';
+import '../../screens/normas/normas_screen.dart';
+import '../../screens/perfil/perfil_screen.dart';
 import '../../screens/registro/registro_screen.dart';
 import '../bindings/auth_bindings.dart';
 import '../bindings/consultas_bindings.dart';
+import '../bindings/cuenta_bindings.dart';
 import 'app_routes.dart';
 import 'middlewares.dart';
 

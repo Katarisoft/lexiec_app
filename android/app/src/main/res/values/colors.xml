@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">#F5B301</color>
+    <!-- Marino de la marca (AppColors.degradadoMarca[0]) para la pantalla de arranque. -->
+    <color name="splash_fondo">#0F2350</color>
+</resources>
