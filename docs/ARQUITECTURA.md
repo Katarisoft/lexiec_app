@@ -96,6 +96,18 @@ EventoChat (sealed)
 - La primera respuesta asigna un título automático a la consulta. `ConversacionesController` la sube
   al inicio de **Mis consultas** sin recargar la lista.
 
+## Planes y saldo
+
+- `PlanController` es global (`InicialBinding`): lo comparten "Mi plan" y el chat.
+- Al abrir un chat y después de cada respuesta, refresca el saldo en segundo plano con `GET /plan`.
+  El chat muestra "Te quedan N consultas…" bajo el cuadro de texto.
+- Sin saldo, el backend responde **402** antes de abrir el streaming. `MapeadorErrores` lo
+  convierte en `QuotaExceededException`. El chat devuelve la pregunta al cuadro de texto, muestra
+  el motivo y ofrece "Ver planes".
+- El pago es manual: "Mi plan" copia el enlace de `consultaslegales.app` al portapapeles, sin
+  agregar dependencias, e indica el usuario que se debe poner en el comprobante.
+- Al cerrar sesión, `PlanController.limpiar` vacía el saldo junto con el historial local.
+
 ## Persistencia local
 
 | Dato | Dónde | Por qué |

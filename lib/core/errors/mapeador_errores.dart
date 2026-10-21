@@ -44,6 +44,8 @@ abstract final class MapeadorErrores {
         return BadRequestException(detalle: detalle);
       case 401:
         return UnauthorizedException(detalle: detalle);
+      case 402:
+        return QuotaExceededException(detalle: detalle);
       case 403:
         return ForbiddenException(detalle: detalle);
       case 404:

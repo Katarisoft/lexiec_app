@@ -13,17 +13,27 @@ import '../data/repositories/chat_repository.dart';
 import '../data/repositories/conversaciones_repository.dart';
 import 'conversaciones_controller.dart';
 import 'mensajes_error.dart';
+import 'plan_controller.dart';
 import 'view_status.dart';
 
 /// Chat de una consulta: historial, nueva pregunta y respuesta en streaming.
 class ConsultaController extends GetxController {
-  ConsultaController({required this._repositorio, required this._chat, required this._lista, required this.id});
+  ConsultaController({
+    required this._repositorio,
+    required this._chat,
+    required this._lista,
+    required this.plan,
+    required this.id,
+  });
 
   final ConversacionesRepository _repositorio;
   final ChatRepository _chat;
 
   /// Controlador compartido de la lista (para reflejar cambios en "Mis consultas").
   final ConversacionesController _lista;
+
+  /// Saldo compartido con "Mi plan": se muestra bajo el cuadro de texto y se actualiza tras cada respuesta.
+  final PlanController plan;
   final String id;
 
   static const int minimoCaracteres = 3;
@@ -50,6 +60,9 @@ class ConsultaController extends GetxController {
   final RxString provisional = ''.obs;
   final RxnString errorEnvio = RxnString();
 
+  /// Se agotaron las consultas (402): el cuadro de texto ofrece "Ver planes".
+  final RxBool sinConsultas = false.obs;
+
   /// Segundos para poder volver a preguntar (429 / 503 con Retry-After).
   final RxInt esperaSegundos = 0.obs;
 
@@ -68,6 +81,7 @@ class ConsultaController extends GetxController {
     super.onInit();
     conversacion.value = _lista.conversaciones.firstWhereOrNull((c) => c.id == id);
     cargar();
+    unawaited(plan.refrescarSaldo());
   }
 
   Future<void> cargar() async {
@@ -102,6 +116,7 @@ class ConsultaController extends GetxController {
     if (!puedeEnviar) return;
 
     errorEnvio.value = null;
+    sinConsultas.value = false;
     pregunta.clear();
     final propia = Mensaje(
       id: -DateTime.now().microsecondsSinceEpoch, // provisional: el servidor asigna el definitivo
@@ -124,6 +139,7 @@ class ConsultaController extends GetxController {
           case EventoFinal(:final respuesta):
             terminada = true;
             _aplicarRespuesta(respuesta);
+            unawaited(plan.refrescarSaldo());
           case EventoError(:final detalle, :final codigo):
             terminada = true;
             _revertir(propia, detalle, espera: codigo == 'ocupado' ? const Duration(seconds: 10) : null);
@@ -141,6 +157,7 @@ class ConsultaController extends GetxController {
         ServiceBusyException(:final reintentarEn) => reintentarEn ?? const Duration(seconds: 10),
         _ => null,
       };
+      sinConsultas.value = e is QuotaExceededException;
       _revertir(propia, MensajesError.de(e), espera: espera);
     } finally {
       enviando.value = false;

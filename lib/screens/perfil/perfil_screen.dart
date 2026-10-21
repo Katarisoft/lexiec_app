@@ -59,6 +59,16 @@ class PerfilScreen extends GetView<PerfilController> {
         padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           Obx(() => _Cabecera(perfil: controller.perfil.value)),
+          seccion('Plan'),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.workspace_premium_outlined),
+              title: const Text('Mi plan'),
+              subtitle: const Text('Saldo de consultas y paquetes'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: controller.irAPlan,
+            ),
+          ),
           seccion('Apariencia'),
           Card(
             child: Padding(

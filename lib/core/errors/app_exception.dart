@@ -21,6 +21,11 @@ final class UnauthorizedException extends AppException {
   const UnauthorizedException({super.detalle}) : super(statusCode: 401);
 }
 
+/// 402 con `codigo: sin_consultas`: agotó las consultas gratuitas del mes y no tiene saldo pagado.
+final class QuotaExceededException extends AppException {
+  const QuotaExceededException({super.detalle}) : super(statusCode: 402);
+}
+
 /// 403: sin permisos (p. ej. código de invitación inválido).
 final class ForbiddenException extends AppException {
   const ForbiddenException({super.detalle}) : super(statusCode: 403);

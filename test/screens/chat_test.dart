@@ -11,6 +11,7 @@ import 'package:lexiec/data/models/mensaje.dart';
 import 'package:lexiec/data/models/respuesta_chat.dart';
 import 'package:lexiec/data/repositories/conversaciones_repository.dart';
 import 'package:lexiec/screens/consulta/consulta_screen.dart';
+import 'package:lexiec/screens/plan/plan_screen.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../helpers/app_prueba.dart';
@@ -140,6 +141,21 @@ void main() {
     await tester.pump();
     expect(find.textContaining('Sin conexión'), findsOneWidget);
     expect(tester.widget<TextField>(find.byType(TextField)).controller!.text, '¿Qué es la calumnia?');
+  });
+
+  testWidgets('402 sin consultas: explica el motivo y "Ver planes" abre Mi plan', (tester) async {
+    final m = await _abrirChat(tester);
+    expect(find.textContaining('Te quedan 3 consultas gratis este mes'), findsOneWidget);
+    when(
+      () => m.chat.preguntar(any(), any(), cancelacion: any(named: 'cancelacion')),
+    ).thenAnswer((_) => Stream.error(const QuotaExceededException(detalle: 'Usaste tus consultas gratuitas.')));
+    await _preguntar(tester, '¿Qué es la calumnia?');
+    await tester.pump();
+    expect(find.text('Usaste tus consultas gratuitas.'), findsOneWidget);
+    expect(tester.widget<TextField>(find.byType(TextField)).controller!.text, '¿Qué es la calumnia?');
+    await tester.tap(find.widgetWithText(TextButton, 'Ver planes'));
+    await tester.pumpAndSettle();
+    expect(find.byType(PlanScreen), findsOneWidget);
   });
 
   testWidgets('pregunta demasiado corta: avisa sin llamar a la API', (tester) async {

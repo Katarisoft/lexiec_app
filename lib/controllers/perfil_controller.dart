@@ -37,4 +37,6 @@ class PerfilController extends GetxController {
   void irAEliminarCuenta() => Get.toNamed<void>(AppRoutes.eliminarCuenta);
 
   void irANormas() => Get.toNamed<void>(AppRoutes.normas);
+
+  void irAPlan() => Get.toNamed<void>(AppRoutes.plan);
 }

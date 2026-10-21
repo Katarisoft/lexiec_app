@@ -79,7 +79,7 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgets('mi cuenta, cambiar clave, eliminar cuenta y normas', (tester) async {
+  testWidgets('mi cuenta, mi plan, cambiar clave, eliminar cuenta y normas', (tester) async {
     _telefonoAngostoLetraGrande(tester);
     final documentos = DocumentosRepositoryMock();
     when(documentos.listar).thenAnswer(
@@ -94,7 +94,8 @@ void main() {
     );
     await montarApp(tester, repositorioBase(sesionGuardada: true), documentos: documentos);
     await abrirMiCuenta(tester);
-    for (final destino in ['Cambiar clave', 'Eliminar mi cuenta', 'Normas disponibles']) {
+    // En el orden en que aparecen en "Mi cuenta": solo hace falta desplazarse hacia abajo.
+    for (final destino in ['Mi plan', 'Cambiar clave', 'Normas disponibles', 'Eliminar mi cuenta']) {
       await tester.scrollUntilVisible(find.text(destino), 200, scrollable: find.byType(Scrollable).first);
       await tester.tap(find.text(destino));
       await tester.pumpAndSettle();

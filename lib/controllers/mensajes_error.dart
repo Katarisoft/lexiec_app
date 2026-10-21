@@ -6,6 +6,8 @@ abstract final class MensajesError {
   static String de(AppException error) => switch (error) {
     BadRequestException(:final detalle) => detalle ?? 'Datos inválidos en la solicitud.',
     UnauthorizedException() => 'Tu sesión expiró. Inicia sesión de nuevo.',
+    QuotaExceededException(:final detalle) =>
+      detalle ?? 'Usaste tus consultas disponibles. Adquiere un paquete para seguir consultando.',
     ForbiddenException(:final detalle) => detalle ?? 'No tienes permisos para esta acción.',
     NotFoundException() => 'No encontramos lo que buscas. Puede que se haya eliminado.',
     ConflictException(:final detalle) => detalle ?? 'Ese dato ya está registrado.',

@@ -9,6 +9,7 @@ import '../../screens/inicio/inicio_screen.dart';
 import '../../screens/login/login_screen.dart';
 import '../../screens/normas/normas_screen.dart';
 import '../../screens/perfil/perfil_screen.dart';
+import '../../screens/plan/plan_screen.dart';
 import '../../screens/registro/registro_screen.dart';
 import '../bindings/auth_bindings.dart';
 import '../bindings/consultas_bindings.dart';
@@ -72,6 +73,13 @@ abstract final class AppPages {
       name: AppRoutes.normas,
       page: () => const NormasScreen(),
       binding: NormasBinding(),
+      middlewares: [SesionRequeridaMiddleware()],
+      transition: Transition.rightToLeftWithFade,
+    ),
+    // PlanController es global (InicialBinding): la pantalla no necesita binding propio.
+    GetPage(
+      name: AppRoutes.plan,
+      page: () => const PlanScreen(),
       middlewares: [SesionRequeridaMiddleware()],
       transition: Transition.rightToLeftWithFade,
     ),

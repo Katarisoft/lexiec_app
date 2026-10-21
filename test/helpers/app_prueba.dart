@@ -3,14 +3,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:lexiec/app/lexiec_app.dart';
 import 'package:lexiec/app/routes/app_routes.dart';
+import 'package:lexiec/controllers/plan_controller.dart';
 import 'package:lexiec/controllers/sesion_controller.dart';
 import 'package:lexiec/controllers/tema_controller.dart';
 import 'package:lexiec/core/network/eventos_sesion.dart';
 import 'package:lexiec/data/models/perfil.dart';
+import 'package:lexiec/data/models/plan.dart';
 import 'package:lexiec/data/repositories/auth_repository.dart';
 import 'package:lexiec/data/repositories/chat_repository.dart';
 import 'package:lexiec/data/repositories/conversaciones_repository.dart';
 import 'package:lexiec/data/repositories/documentos_repository.dart';
+import 'package:lexiec/data/repositories/planes_repository.dart';
 import 'package:lexiec/data/repositories/preferencias_repository.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -24,6 +27,8 @@ class DocumentosRepositoryMock extends Mock implements DocumentosRepository {}
 
 class PreferenciasRepositoryMock extends Mock implements PreferenciasRepository {}
 
+class PlanesRepositoryMock extends Mock implements PlanesRepository {}
+
 final perfilDemo = Perfil(usuario: 'maria.perez', nombre: 'María Pérez', creadoEn: DateTime.utc(2026, 10, 20));
 
 /// Dependencias globales con el repositorio falso (sin almacenamiento seguro ni red).
@@ -35,10 +40,12 @@ class BindingPrueba extends Bindings {
     ChatRepository? chat,
     DocumentosRepository? documentos,
     PreferenciasRepository? preferencias,
+    PlanesRepository? planes,
   ]) : conversaciones = conversaciones ?? conversacionesVacias(),
        chat = chat ?? ChatRepositoryMock(),
        documentos = documentos ?? DocumentosRepositoryMock(),
-       preferencias = preferencias ?? preferenciasBase();
+       preferencias = preferencias ?? preferenciasBase(),
+       planes = planes ?? planesBase();
 
   final AuthRepository repositorio;
   final EventosSesion eventos;
@@ -46,6 +53,7 @@ class BindingPrueba extends Bindings {
   final ChatRepository chat;
   final DocumentosRepository documentos;
   final PreferenciasRepository preferencias;
+  final PlanesRepository planes;
 
   @override
   void dependencies() {
@@ -55,10 +63,44 @@ class BindingPrueba extends Bindings {
     Get.put<ChatRepository>(chat);
     Get.put<DocumentosRepository>(documentos);
     Get.put<TemaController>(TemaController(preferencias: preferencias));
+    final plan = Get.put<PlanController>(PlanController(repositorio: planes));
     Get.put<SesionController>(
-      SesionController(repositorio: repositorio, eventos: eventos, limpiezas: [conversaciones.limpiarHistorialLocal]),
+      SesionController(
+        repositorio: repositorio,
+        eventos: eventos,
+        limpiezas: [conversaciones.limpiarHistorialLocal, plan.limpiar],
+      ),
     );
   }
+}
+
+/// Saldo de prueba: plan gratis con 3 de 5 consultas.
+final saldoGratis = EstadoPlan(
+  modo: ModoPlan.gratis,
+  iaRapida: false,
+  consultasPagadas: 0,
+  gratisLimite: 5,
+  gratisRestantes: 3,
+  gratisRenuevaEn: DateTime.utc(2026, 11, 1, 5),
+);
+
+const catalogoDemo = [
+  PlanCatalogo(
+    codigo: 'paquete_20',
+    nombre: 'Paquete 20',
+    consultas: 20,
+    dias: 180,
+    precioUsd: '4.99',
+    descripcion: '20 consultas con IA rápida, válidas 6 meses.',
+  ),
+];
+
+/// Repositorio de planes falso: plan gratis y un plan a la venta.
+PlanesRepositoryMock planesBase({EstadoPlan? saldo}) {
+  final r = PlanesRepositoryMock();
+  when(r.estado).thenAnswer((_) async => saldo ?? saldoGratis);
+  when(r.catalogo).thenAnswer((_) async => catalogoDemo);
+  return r;
 }
 
 /// Repositorio de conversaciones falso sin consultas (por defecto).
@@ -80,6 +122,7 @@ Future<void> montarApp(
   ChatRepository? chat,
   DocumentosRepository? documentos,
   PreferenciasRepository? preferencias,
+  PlanesRepository? planes,
   String ruta = AppRoutes.inicio,
 }) async {
   Get.testMode = true;
@@ -92,6 +135,7 @@ Future<void> montarApp(
         chat,
         documentos,
         preferencias,
+        planes,
       ),
       rutaInicial: ruta,
     ),

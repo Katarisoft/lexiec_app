@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import '../../controllers/plan_controller.dart';
 import '../../controllers/sesion_controller.dart';
 import '../../controllers/tema_controller.dart';
 import '../../core/network/almacen_tokens.dart';
@@ -12,10 +13,12 @@ import '../../data/datasources/remote_auth_datasource.dart';
 import '../../data/datasources/remote_chat_datasource.dart';
 import '../../data/datasources/remote_conversaciones_datasource.dart';
 import '../../data/datasources/remote_documentos_datasource.dart';
+import '../../data/datasources/remote_planes_datasource.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../data/repositories/chat_repository.dart';
 import '../../data/repositories/conversaciones_repository.dart';
 import '../../data/repositories/documentos_repository.dart';
+import '../../data/repositories/planes_repository.dart';
 import '../../data/repositories/preferencias_repository.dart';
 
 /// Dependencias globales (viven toda la app).
@@ -51,12 +54,16 @@ class InicialBinding extends Bindings {
       ChatRepository(remoto: RemoteChatDatasource(Get.find<ApiClient>()), local: historialLocal),
       permanent: true,
     );
+    final plan = Get.put<PlanController>(
+      PlanController(repositorio: PlanesRepository(RemotePlanesDatasource(Get.find<ApiClient>()))),
+      permanent: true,
+    );
     Get.put<SesionController>(
       SesionController(
         repositorio: Get.find<AuthRepository>(),
         eventos: Get.find<EventosSesion>(),
-        // Al cerrar sesión no queda historial de la cuenta en el dispositivo.
-        limpiezas: [Get.find<ConversacionesRepository>().limpiarHistorialLocal],
+        // Al cerrar sesión no queda historial ni saldo de la cuenta en el dispositivo.
+        limpiezas: [Get.find<ConversacionesRepository>().limpiarHistorialLocal, plan.limpiar],
       ),
       permanent: true,
     );

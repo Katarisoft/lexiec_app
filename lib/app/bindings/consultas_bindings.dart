@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 
 import '../../controllers/consulta_controller.dart';
 import '../../controllers/conversaciones_controller.dart';
+import '../../controllers/plan_controller.dart';
 import '../../controllers/sesion_controller.dart';
 import '../../data/repositories/chat_repository.dart';
 import '../../data/repositories/conversaciones_repository.dart';
@@ -24,6 +25,7 @@ class ConsultaBinding extends Bindings {
       repositorio: Get.find<ConversacionesRepository>(),
       chat: Get.find<ChatRepository>(),
       lista: Get.find<ConversacionesController>(),
+      plan: Get.find<PlanController>(),
       id: Get.parameters['id']!,
     ),
   );
