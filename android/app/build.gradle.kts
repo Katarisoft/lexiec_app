@@ -31,6 +31,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders["nombreApp"] = "LexiEC"
     }
 
     signingConfigs {
@@ -45,6 +46,12 @@ android {
     }
 
     buildTypes {
+        // Depuración: se instala como app aparte ("LexiEC (dev)") junto al APK de release,
+        // que está firmado con otra clave y no se puede reemplazar por esta.
+        debug {
+            applicationIdSuffix = ".debug"
+            manifestPlaceholders["nombreApp"] = "LexiEC (dev)"
+        }
         release {
             signingConfig = signingConfigs.getByName(if (tieneFirmaPropia) "release" else "debug")
         }

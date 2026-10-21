@@ -2,7 +2,7 @@
     <!-- Necesario en Release: sin este permiso el APK no puede llamar a la API. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:label="LexiEC"
+        android:label="${nombreApp}"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

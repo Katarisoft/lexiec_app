@@ -7,11 +7,14 @@ completa. Es orientación y no reemplaza la asesoría de un abogado.
 
 ## Capturas de pantalla
 
-| Inicio de sesión | Mis consultas | Asistente de IA con fuentes | Mi cuenta |
-|:---:|:---:|:---:|:---:|
-| ![Inicio de sesión](docs/capturas/01_login.png) | ![Mis consultas](docs/capturas/02_consultas.png) | ![Chat con citas](docs/capturas/03_chat.png) | ![Mi cuenta](docs/capturas/04_cuenta.png) |
+| Inicio de sesión | Mis consultas | Asistente de IA con fuentes |
+|:---:|:---:|:---:|
+| ![Pantalla de inicio de sesión de LexiEC](docs/capturas/01_login.png) | ![Lista Mis consultas con las consultas de la cuenta demo](docs/capturas/02_consultas.png) | ![Chat con pregunta de seguimiento y fuentes Art. 37 y Art. 36 de la Constitución](docs/capturas/03_chat.png) |
+| **Texto literal de la cita** | **Mi cuenta** | **Mi plan** |
+| ![Hoja con el texto literal del Art. 36, página 18](docs/capturas/05_cita.png) | ![Mi cuenta: perfil, plan, tema, seguridad e información](docs/capturas/04_cuenta.png) | ![Mi plan: saldo gratis del mes y planes con IA rápida](docs/capturas/06_plan.png) |
 
-Las capturas se tomaron en un Pixel 9a físico, con la cuenta de demostración y el backend local.
+Las capturas se tomaron en un Pixel 9a físico, con la cuenta de demostración y el backend local
+(build de depuración, que se instala como "LexiEC (dev)" junto al APK del Release).
 
 ## Qué incluye
 
