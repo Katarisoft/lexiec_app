@@ -12,7 +12,7 @@ jobs:
   apk:
     name: Compilar y publicar el APK
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       # URL del backend de producción (no es un secreto).
       API_BASE_URL: https://lexiec.katarisoft.com/api/v1
@@ -23,6 +23,26 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+
+      # NDK que exige Flutter 3.44.0 (flutter.ndkVersion). Se instala antes y con reintentos:
+      # si Gradle lo descarga a mitad de la compilación, una descarga corrupta tumba el build
+      # ("Archive is not a ZIP archive").
+      - name: Instalar NDK
+        env:
+          NDK_VERSION: 28.2.13676358
+        run: |
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          for intento in 1 2 3; do
+            if yes | "$SDKMANAGER" --install "ndk;$NDK_VERSION" > /dev/null; then
+              if [ -f "$ANDROID_HOME/ndk/$NDK_VERSION/source.properties" ]; then
+                echo "NDK $NDK_VERSION instalado"; exit 0
+              fi
+            fi
+            echo "::warning::Instalación del NDK fallida (intento $intento), reintentando"
+            rm -rf "$ANDROID_HOME/ndk/$NDK_VERSION"
+            sleep 20
+          done
+          echo "::error::No se pudo instalar el NDK $NDK_VERSION"; exit 1
 
       - uses: subosito/flutter-action@v2
         with:
