@@ -11,4 +11,9 @@ abstract final class AppRoutes {
   /// Detalle de una consulta (protegida).
   static const String consultaPatron = '/consultas/:id';
   static String consulta(String id) => '/consultas/$id';
+
+  static const String perfil = '/perfil';
+  static const String cambiarClave = '/perfil/clave';
+  static const String eliminarCuenta = '/perfil/eliminar';
+  static const String normas = '/normas';
 }

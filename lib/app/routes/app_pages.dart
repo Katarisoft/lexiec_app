@@ -1,4 +1,9 @@
 import 'package:get/get.dart';
+import '../bindings/cuenta_bindings.dart';
+import '../../screens/perfil/perfil_screen.dart';
+import '../../screens/normas/normas_screen.dart';
+import '../../screens/eliminar_cuenta/eliminar_cuenta_screen.dart';
+import '../../screens/cambiar_clave/cambiar_clave_screen.dart';
 
 import '../../screens/bienvenida/bienvenida_screen.dart';
 import '../../screens/consulta/consulta_screen.dart';
@@ -39,6 +44,34 @@ abstract final class AppPages {
       name: AppRoutes.consultaPatron,
       page: () => const ConsultaScreen(),
       binding: ConsultaBinding(),
+      middlewares: [SesionRequeridaMiddleware()],
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: AppRoutes.perfil,
+      page: () => const PerfilScreen(),
+      binding: PerfilBinding(),
+      middlewares: [SesionRequeridaMiddleware()],
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: AppRoutes.cambiarClave,
+      page: () => const CambiarClaveScreen(),
+      binding: CambiarClaveBinding(),
+      middlewares: [SesionRequeridaMiddleware()],
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: AppRoutes.eliminarCuenta,
+      page: () => const EliminarCuentaScreen(),
+      binding: EliminarCuentaBinding(),
+      middlewares: [SesionRequeridaMiddleware()],
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: AppRoutes.normas,
+      page: () => const NormasScreen(),
+      binding: NormasBinding(),
       middlewares: [SesionRequeridaMiddleware()],
       transition: Transition.rightToLeftWithFade,
     ),

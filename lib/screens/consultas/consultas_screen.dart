@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../app/routes/app_routes.dart';
 import '../../app/theme/app_spacing.dart';
 import '../../controllers/conversaciones_controller.dart';
-import '../../controllers/sesion_controller.dart';
 import '../../controllers/view_status.dart';
 import '../../data/models/conversacion.dart';
 import '../../widgets/estado_views.dart';
@@ -14,21 +14,6 @@ import '../../widgets/tarjeta_consulta.dart';
 class ConsultasScreen extends GetView<ConversacionesController> {
   const ConsultasScreen({super.key});
 
-  Future<void> _confirmarCierre(BuildContext context) async {
-    final confirmar = await showDialog<bool>(
-      context: context,
-      builder: (contexto) => AlertDialog(
-        title: const Text('¿Cerrar sesión?'),
-        content: const Text('Tendrás que ingresar tu usuario y clave para volver.'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(contexto, false), child: const Text('Cancelar')),
-          FilledButton(onPressed: () => Navigator.pop(contexto, true), child: const Text('Cerrar sesión')),
-        ],
-      ),
-    );
-    if (confirmar ?? false) await Get.find<SesionController>().cerrarSesion();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,9 +21,14 @@ class ConsultasScreen extends GetView<ConversacionesController> {
         title: const Text('Mis consultas'),
         actions: [
           IconButton(
-            tooltip: 'Cerrar sesión',
-            icon: const Icon(Icons.logout),
-            onPressed: () => _confirmarCierre(context),
+            tooltip: 'Normas disponibles',
+            icon: const Icon(Icons.menu_book_outlined),
+            onPressed: () => Get.toNamed<void>(AppRoutes.normas),
+          ),
+          IconButton(
+            tooltip: 'Mi cuenta',
+            icon: const Icon(Icons.account_circle_outlined),
+            onPressed: () => Get.toNamed<void>(AppRoutes.perfil),
           ),
         ],
       ),

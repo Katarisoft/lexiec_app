@@ -217,10 +217,7 @@ void main() {
     testWidgets('cerrar sesión pide confirmación, revoca y vuelve al login', (tester) async {
       final repo = repositorioBase(sesionGuardada: true);
       await montarApp(tester, repo);
-      await tester.tap(find.byTooltip('Cerrar sesión'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(FilledButton, 'Cerrar sesión'));
-      await tester.pumpAndSettle();
+      await cerrarSesionDesdeMiCuenta(tester);
       verify(repo.cerrarSesion).called(1);
       expect(find.byType(LoginScreen), findsOneWidget);
     });

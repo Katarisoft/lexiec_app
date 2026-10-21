@@ -1,4 +1,8 @@
 import 'package:get/get.dart';
+import '../../data/repositories/preferencias_repository.dart';
+import '../../data/repositories/documentos_repository.dart';
+import '../../data/datasources/remote_documentos_datasource.dart';
+import '../../controllers/tema_controller.dart';
 
 import '../../controllers/sesion_controller.dart';
 import '../../core/network/almacen_tokens.dart';
@@ -24,12 +28,18 @@ class InicialBinding extends Bindings {
       ApiClient(almacen: Get.find<AlmacenTokens>(), eventos: Get.find<EventosSesion>()),
       permanent: true,
     );
+    final preferencias = LocalPreferenciasDatasource();
     Get.put<AuthRepository>(
       AuthRepository(
         remoto: RemoteAuthDatasource(Get.find<ApiClient>()),
         tokens: Get.find<AlmacenTokens>(),
-        preferencias: LocalPreferenciasDatasource(),
+        preferencias: preferencias,
       ),
+      permanent: true,
+    );
+    Get.put<TemaController>(TemaController(preferencias: PreferenciasRepository(preferencias)), permanent: true);
+    Get.put<DocumentosRepository>(
+      DocumentosRepository(RemoteDocumentosDatasource(Get.find<ApiClient>())),
       permanent: true,
     );
     final historialLocal = LocalConversacionesDatasource(ClaveCacheSegura());

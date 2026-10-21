@@ -180,10 +180,7 @@ void main() {
   testWidgets('cerrar sesión vacía el historial local', (tester) async {
     final repo = _repo();
     await _abrir(tester, repo);
-    await tester.tap(find.byTooltip('Cerrar sesión'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(FilledButton, 'Cerrar sesión'));
-    await tester.pumpAndSettle();
+    await cerrarSesionDesdeMiCuenta(tester);
     verify(repo.limpiarHistorialLocal).called(1);
   });
 }

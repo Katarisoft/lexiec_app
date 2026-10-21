@@ -67,6 +67,13 @@ class SesionController extends GetxController {
     unawaited(Get.offAllNamed<void>(AppRoutes.login)); // la Future termina al cerrar esa ruta: no se espera
   }
 
+  /// Tras eliminar la cuenta: ya no hay sesión que revocar en el servidor.
+  void salirSinRevocar(String aviso) {
+    _limpiar();
+    unawaited(Get.offAllNamed<void>(AppRoutes.login));
+    mostrarAviso(aviso);
+  }
+
   void _alExpirar() {
     if (!autenticado) return;
     _limpiar();
