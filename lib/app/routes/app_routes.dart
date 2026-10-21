@@ -16,4 +16,5 @@ abstract final class AppRoutes {
   static const String cambiarClave = '/perfil/clave';
   static const String eliminarCuenta = '/perfil/eliminar';
   static const String normas = '/normas';
+  static const String plan = '/plan';
 }

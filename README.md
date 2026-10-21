@@ -30,6 +30,8 @@ Las capturas se tomaron en un Pixel 9a físico, con la cuenta de demostración y
   pantallas y las dependencias se registran en `Bindings`.
 - [x] Extras:
   - Mi cuenta: perfil, cambio de clave, eliminación de la cuenta y tema claro, oscuro o del sistema.
+  - Mi plan: saldo de consultas (gratis con el modelo local, paquetes pagados con IA rápida), planes a
+    la venta y cómo comprarlos en consultaslegales.app. Sin saldo, el chat lo explica y ofrece "Ver planes".
   - Lista de normas disponibles.
   - Esperas con cuenta regresiva ante 429 y 503.
   - Contraste AA verificado con pruebas y soporte de letra grande.

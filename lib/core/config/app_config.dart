@@ -12,5 +12,8 @@ abstract final class AppConfig {
   /// URL base de la API, sin barra final (p. ej. `https://lexiec.katarisoft.com/api/v1`).
   static String get apiBaseUrl => normalizarUrl(_urlDefinida.isEmpty ? _urlPorDefecto : _urlDefinida);
 
+  /// Página de planes y compra (pago manual: el usuario envía su comprobante).
+  static const String urlPlanes = 'https://consultaslegales.app/#planes';
+
   static String normalizarUrl(String url) => url.trim().replaceAll(RegExp(r'/+$'), '');
 }

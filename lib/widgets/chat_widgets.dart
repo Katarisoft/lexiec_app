@@ -118,6 +118,8 @@ class CompositorPregunta extends StatelessWidget {
     this.error,
     this.esperaSegundos = 0,
     this.maximo = 1000,
+    this.saldo,
+    this.alVerPlanes,
   });
 
   final TextEditingController controlador;
@@ -127,6 +129,12 @@ class CompositorPregunta extends StatelessWidget {
   final String? error;
   final int esperaSegundos;
   final int maximo;
+
+  /// Consultas restantes ("Te quedan 3 consultas gratis este mes"), si aplica.
+  final String? saldo;
+
+  /// Con consultas agotadas: acción para abrir "Mi plan".
+  final VoidCallback? alVerPlanes;
 
   @override
   Widget build(BuildContext context) {
@@ -156,6 +164,7 @@ class CompositorPregunta extends StatelessWidget {
                         Expanded(
                           child: Text(aviso, style: tema.textTheme.bodySmall?.copyWith(color: esquema.error)),
                         ),
+                        if (alVerPlanes != null) TextButton(onPressed: alVerPlanes, child: const Text('Ver planes')),
                       ],
                     ),
                   ),
@@ -194,7 +203,7 @@ class CompositorPregunta extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: AppSpacing.xs, right: AppSpacing.sm),
                 child: Text(
-                  'LexiEC orienta con base en las normas; revisa siempre las fuentes citadas.',
+                  [?saldo, 'LexiEC orienta con base en las normas; revisa siempre las fuentes citadas.'].join(' · '),
                   style: tema.textTheme.bodySmall?.copyWith(color: esquema.onSurfaceVariant),
                 ),
               ),

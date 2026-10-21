@@ -42,6 +42,11 @@ void main() {
     expect(MensajesError.de(const ServiceBusyException(reintentarEn: Duration(seconds: 12))), contains('12 s'));
   });
 
+  test('402: consultas agotadas, sin cerrar sesión', () {
+    expect(MensajesError.de(const QuotaExceededException()), contains('paquete'));
+    expect(MensajesError.requiereLogin(const QuotaExceededException()), isFalse);
+  });
+
   test('solo el 401 obliga a volver al login', () {
     expect(MensajesError.requiereLogin(const UnauthorizedException()), isTrue);
     expect(MensajesError.requiereLogin(const ServerException()), isFalse);

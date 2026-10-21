@@ -32,6 +32,14 @@ void main() {
     expect(await _errorDe(respuestaJson(409, {'detail': 'El correo ya está registrado.'})), isA<ConflictException>());
   });
 
+  test('402 "sin_consultas": consultas agotadas, con el detalle del servidor', () async {
+    final e = await _errorDe(
+      respuestaJson(402, {'detail': 'Usaste tus consultas gratuitas de este mes.', 'codigo': 'sin_consultas'}),
+    );
+    expect(e, isA<QuotaExceededException>());
+    expect(e.detalle, 'Usaste tus consultas gratuitas de este mes.');
+  });
+
   test('422 traduce los errores por campo al español', () async {
     final e =
         await _errorDe(

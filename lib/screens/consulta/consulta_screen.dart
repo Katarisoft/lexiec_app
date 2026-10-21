@@ -73,6 +73,8 @@ class ConsultaScreen extends GetView<ConsultaController> {
                 esperaSegundos: controller.esperaSegundos.value,
                 maximo: ConsultaController.maximoCaracteres,
                 alEnviar: controller.enviar,
+                saldo: controller.plan.resumenSaldo,
+                alVerPlanes: controller.sinConsultas.value ? controller.plan.irAPlan : null,
               ),
             ],
           ),
