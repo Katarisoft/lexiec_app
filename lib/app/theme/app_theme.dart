@@ -9,24 +9,32 @@ abstract final class AppTheme {
   static ThemeData claro() => _construir(
     ColorScheme.fromSeed(seedColor: AppColors.marino).copyWith(
       primary: AppColors.marino,
+      onPrimary: AppColors.textoSobreMarca,
       secondary: AppColors.ambar,
       onSecondary: AppColors.sobreAmbar,
       surface: AppColors.superficieClara,
+      onSurface: AppColors.textoClaro,
+      onSurfaceVariant: AppColors.textoSecundarioClaro,
     ),
     AppColors.fondoClaro,
+    ColoresMarca.claro,
   );
 
   static ThemeData oscuro() => _construir(
     ColorScheme.fromSeed(seedColor: AppColors.marino, brightness: Brightness.dark).copyWith(
       primary: AppColors.marinoClaro,
+      onPrimary: AppColors.marino,
       secondary: AppColors.ambar,
       onSecondary: AppColors.sobreAmbar,
       surface: AppColors.superficieOscura,
+      onSurface: AppColors.textoOscuro,
+      onSurfaceVariant: AppColors.textoSecundarioOscuro,
     ),
     AppColors.fondoOscuro,
+    ColoresMarca.oscuro,
   );
 
-  static ThemeData _construir(ColorScheme esquema, Color fondo) {
+  static ThemeData _construir(ColorScheme esquema, Color fondo, ColoresMarca marca) {
     final base = ThemeData(useMaterial3: true, colorScheme: esquema);
     final texto = base.textTheme.copyWith(
       headlineMedium: base.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700, letterSpacing: -0.5),
@@ -40,6 +48,7 @@ abstract final class AppTheme {
     final bordeRedondeado = RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md));
 
     return base.copyWith(
+      extensions: [marca],
       scaffoldBackgroundColor: fondo,
       textTheme: texto,
       appBarTheme: AppBarTheme(

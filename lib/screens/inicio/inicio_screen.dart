@@ -31,7 +31,7 @@ class InicioScreen extends StatelessWidget {
                 Text(
                   'La ley ecuatoriana, explicada con sus fuentes',
                   textAlign: TextAlign.center,
-                  style: tema.textTheme.bodyLarge?.copyWith(color: tema.colorScheme.onPrimary.withValues(alpha: 0.85)),
+                  style: tema.textTheme.bodyLarge?.copyWith(color: ColoresMarca.de(context).textoSobreMarcaSuave),
                 ),
                 const SizedBox(height: AppSpacing.xl),
                 SizedBox.square(

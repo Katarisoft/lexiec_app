@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../app/theme/app_colors.dart';
 import '../app/theme/app_spacing.dart';
 
 /// Logotipo de LexiEC: balanza dentro de un sello y el nombre.
@@ -12,7 +13,10 @@ class LexiecMarca extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final esquema = Theme.of(context).colorScheme;
-    final colorTexto = sobreFondoOscuro ? esquema.onPrimary : esquema.onSurface;
+    final marca = ColoresMarca.de(context);
+    // Sobre el degradado de marca los colores son fijos (blanco + ámbar puro), en ambos temas.
+    final colorTexto = sobreFondoOscuro ? marca.textoSobreMarca : esquema.onSurface;
+    final colorAcento = sobreFondoOscuro ? esquema.secondary : marca.acentoTexto;
     return Semantics(
       label: 'LexiEC',
       child: ExcludeSemantics(
@@ -32,7 +36,7 @@ class LexiecMarca extends StatelessWidget {
                   const TextSpan(text: 'Lexi'),
                   TextSpan(
                     text: 'EC',
-                    style: TextStyle(color: esquema.secondary),
+                    style: TextStyle(color: colorAcento),
                   ),
                 ],
               ),
