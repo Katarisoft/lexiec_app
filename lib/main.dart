@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'app/lexiec_app.dart';
@@ -8,5 +9,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   ReporteErrores.instalar();
   await initializeDateFormatting('es');
+  await Hive.initFlutter();
   runApp(const LexiecApp());
 }

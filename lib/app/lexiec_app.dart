@@ -8,7 +8,11 @@ import 'routes/app_routes.dart';
 import 'theme/app_theme.dart';
 
 class LexiecApp extends StatelessWidget {
-  const LexiecApp({super.key});
+  const LexiecApp({super.key, this.bindingInicial, this.rutaInicial = AppRoutes.inicio});
+
+  /// Dependencias globales; las pruebas inyectan versiones falsas.
+  final Bindings? bindingInicial;
+  final String rutaInicial;
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +26,8 @@ class LexiecApp extends StatelessWidget {
       fallbackLocale: const Locale('es'),
       supportedLocales: const [Locale('es')],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      initialBinding: InicialBinding(),
-      initialRoute: AppRoutes.inicio,
+      initialBinding: bindingInicial ?? InicialBinding(),
+      initialRoute: rutaInicial,
       getPages: AppPages.paginas,
       defaultTransition: Transition.fadeIn,
     );
