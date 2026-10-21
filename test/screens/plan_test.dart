@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
+import 'package:lexiec/controllers/plan_controller.dart';
 import 'package:lexiec/core/config/app_config.dart';
 import 'package:lexiec/core/errors/app_exception.dart';
 import 'package:lexiec/data/models/plan.dart';
@@ -72,6 +73,27 @@ void main() {
     expect(find.text('18'), findsOneWidget);
     expect(find.text('18 de 20'), findsOneWidget);
     expect(find.byType(LinearProgressIndicator), findsOneWidget);
+  });
+
+  testWidgets('se redibuja cuando cambia el saldo (p. ej. tras acreditar un paquete)', (tester) async {
+    final planes = planesBase();
+    await _abrirMiPlan(tester, planes);
+    expect(find.text('Plan gratis'), findsOneWidget);
+
+    when(planes.estado).thenAnswer(
+      (_) async => EstadoPlan(
+        modo: ModoPlan.pagado,
+        iaRapida: true,
+        consultasPagadas: 20,
+        gratisLimite: 5,
+        gratisRestantes: 0,
+        gratisRenuevaEn: DateTime.utc(2026, 11, 1, 5),
+      ),
+    );
+    await Get.find<PlanController>().refrescarSaldo(); // el estado de la vista ya era "success"
+    await tester.pumpAndSettle();
+    expect(find.text('Plan pagado'), findsOneWidget);
+    expect(find.text('20'), findsOneWidget);
   });
 
   testWidgets('error al cargar: mensaje y Reintentar', (tester) async {

@@ -32,30 +32,37 @@ class _PlanScreenState extends State<PlanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Mi plan')),
-      body: Obx(
-        () => switch (controller.estado.value) {
+      // plan y catálogo se leen aquí (no en el hijo) para que Obx redibuje cuando cambia el saldo.
+      body: Obx(() {
+        final plan = controller.plan.value;
+        final catalogo = controller.catalogo.toList();
+        return switch (controller.estado.value) {
           ViewStatus.loading => const EsqueletoLista(elementos: 3),
           ViewStatus.error => ErrorView(mensaje: controller.mensajeError.value, onReintentar: controller.cargar),
-          ViewStatus.empty || ViewStatus.success => RefreshIndicator(
-            onRefresh: controller.cargar,
-            child: _Contenido(controller: controller),
-          ),
-        },
-      ),
+          ViewStatus.empty || ViewStatus.success =>
+            plan == null
+                ? const EsqueletoLista(elementos: 3)
+                : RefreshIndicator(
+                    onRefresh: controller.cargar,
+                    child: _Contenido(controller: controller, plan: plan, catalogo: catalogo),
+                  ),
+        };
+      }),
     );
   }
 }
 
 class _Contenido extends StatelessWidget {
-  const _Contenido({required this.controller});
+  const _Contenido({required this.controller, required this.plan, required this.catalogo});
 
   final PlanController controller;
+  final EstadoPlan plan;
+  final List<PlanCatalogo> catalogo;
 
   @override
   Widget build(BuildContext context) {
     final tema = Theme.of(context);
     final esquema = tema.colorScheme;
-    final plan = controller.plan.value!;
     Widget seccion(String titulo) => Padding(
       padding: const EdgeInsets.fromLTRB(AppSpacing.xs, AppSpacing.lg, 0, AppSpacing.sm),
       child: Semantics(
@@ -72,10 +79,7 @@ class _Contenido extends StatelessWidget {
           seccion('Tus paquetes'),
           for (final lote in plan.lotes) _TarjetaLote(lote: lote, vence: controller.fechaCorta(lote.venceEn)),
         ],
-        if (controller.catalogo.isNotEmpty) ...[
-          seccion('Planes con IA rápida'),
-          for (final p in controller.catalogo) _TarjetaPlan(plan: p),
-        ],
+        if (catalogo.isNotEmpty) ...[seccion('Planes con IA rápida'), for (final p in catalogo) _TarjetaPlan(plan: p)],
         seccion('Cómo comprar'),
         _ComoComprar(controller: controller),
         const SizedBox(height: AppSpacing.md),
@@ -110,7 +114,8 @@ class _TarjetaSaldo extends StatelessWidget {
       ModoPlan.gratis => (
         'Plan gratis',
         '${plan.gratisRestantes}',
-        'de ${plan.gratisLimite} consultas gratis este mes · se renuevan el ${fecha(plan.gratisRenuevaEn)}',
+        'de ${plan.gratisLimite} ${plan.gratisLimite == 1 ? 'consulta gratis' : 'consultas gratis'} este mes '
+            '· se renuevan el ${fecha(plan.gratisRenuevaEn)}',
       ),
       ModoPlan.sinSaldo => (
         'Sin consultas',
@@ -144,12 +149,9 @@ class _TarjetaSaldo extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
               Text(cifra, style: tema.textTheme.displayMedium?.copyWith(color: marca.textoSobreMarca)),
               Text(detalle, style: tema.textTheme.bodyMedium?.copyWith(color: marca.textoSobreMarcaSuave)),
-              if (!plan.iaRapida && plan.modo != ModoPlan.desconocido) ...[
+              if (_avisoModelo(plan) case final aviso?) ...[
                 const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'Las consultas gratis usan el modelo estándar, que puede tardar más.',
-                  style: tema.textTheme.bodySmall?.copyWith(color: marca.textoSobreMarcaSuave),
-                ),
+                Text(aviso, style: tema.textTheme.bodySmall?.copyWith(color: marca.textoSobreMarcaSuave)),
               ],
             ],
           ),
@@ -157,6 +159,17 @@ class _TarjetaSaldo extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Aclara qué modelo responde cuando no es la IA rápida.
+String? _avisoModelo(EstadoPlan plan) {
+  if (plan.iaRapida) return null;
+  return switch (plan.modo) {
+    ModoPlan.gratis || ModoPlan.sinSaldo => 'Las consultas gratis usan el modelo estándar, que puede tardar más.',
+    ModoPlan.pagado ||
+    ModoPlan.cortesia => 'La IA rápida no está disponible en este momento: respondemos con el modelo estándar.',
+    ModoPlan.desconocido => null,
+  };
 }
 
 class _TarjetaLote extends StatelessWidget {
@@ -170,6 +183,7 @@ class _TarjetaLote extends StatelessWidget {
     final tema = Theme.of(context);
     final esquema = tema.colorScheme;
     return Card(
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -206,6 +220,7 @@ class _TarjetaPlan extends StatelessWidget {
     final esquema = tema.colorScheme;
     final marca = ColoresMarca.de(context);
     return Card(
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
