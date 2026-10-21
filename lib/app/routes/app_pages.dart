@@ -1,11 +1,13 @@
 import 'package:get/get.dart';
 
 import '../../screens/bienvenida/bienvenida_screen.dart';
+import '../../screens/consulta/consulta_screen.dart';
 import '../../screens/consultas/consultas_screen.dart';
 import '../../screens/inicio/inicio_screen.dart';
 import '../../screens/login/login_screen.dart';
 import '../../screens/registro/registro_screen.dart';
 import '../bindings/auth_bindings.dart';
+import '../bindings/consultas_bindings.dart';
 import 'app_routes.dart';
 import 'middlewares.dart';
 
@@ -27,6 +29,18 @@ abstract final class AppPages {
       middlewares: [SoloInvitadoMiddleware()],
       transition: Transition.rightToLeftWithFade,
     ),
-    GetPage(name: AppRoutes.consultas, page: () => const ConsultasScreen(), middlewares: [SesionRequeridaMiddleware()]),
+    GetPage(
+      name: AppRoutes.consultas,
+      page: () => const ConsultasScreen(),
+      binding: ConsultasBinding(),
+      middlewares: [SesionRequeridaMiddleware()],
+    ),
+    GetPage(
+      name: AppRoutes.consultaPatron,
+      page: () => const ConsultaScreen(),
+      binding: ConsultaBinding(),
+      middlewares: [SesionRequeridaMiddleware()],
+      transition: Transition.rightToLeftWithFade,
+    ),
   ];
 }

@@ -7,4 +7,8 @@ abstract final class AppRoutes {
 
   /// Lista principal (protegida).
   static const String consultas = '/consultas';
+
+  /// Detalle de una consulta (protegida).
+  static const String consultaPatron = '/consultas/:id';
+  static String consulta(String id) => '/consultas/$id';
 }

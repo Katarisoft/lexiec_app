@@ -13,7 +13,10 @@ enum EstadoSesion { verificando, autenticado, anonimo }
 
 /// Estado de sesión compartido por toda la app (rutas protegidas, perfil, cierre).
 class SesionController extends GetxController {
-  SesionController({required this._repositorio, required this._eventos});
+  SesionController({required this._repositorio, required this._eventos, this.limpiezas = const []});
+
+  /// Acciones al terminar la sesión (p. ej. vaciar el historial local cifrado).
+  final List<Future<void> Function()> limpiezas;
 
   final AuthRepository _repositorio;
   final EventosSesion _eventos;
@@ -74,5 +77,8 @@ class SesionController extends GetxController {
   void _limpiar() {
     perfil.value = null;
     estado.value = EstadoSesion.anonimo;
+    for (final limpieza in limpiezas) {
+      unawaited(limpieza());
+    }
   }
 }

@@ -145,3 +145,81 @@ class _EstadoBase extends StatelessWidget {
     );
   }
 }
+
+/// Esqueleto de una lista mientras carga (evita una pantalla vacía).
+class EsqueletoLista extends StatelessWidget {
+  const EsqueletoLista({super.key, this.elementos = 6});
+
+  final int elementos;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.surfaceContainerHighest;
+    Widget barra(double ancho, double alto) => Container(
+      width: ancho,
+      height: alto,
+      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(AppRadius.sm)),
+    );
+    return Semantics(
+      label: 'Cargando',
+      child: ListView.separated(
+        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(AppSpacing.md),
+        itemCount: elementos,
+        separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
+        itemBuilder: (_, _) => Card(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              children: [
+                CircleAvatar(backgroundColor: color),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      barra(double.infinity, 14),
+                      const SizedBox(height: AppSpacing.sm),
+                      barra(90, 10),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Franja que avisa que se muestra el historial guardado porque no hay conexión.
+class AvisoSinConexion extends StatelessWidget {
+  const AvisoSinConexion({super.key, required this.alReintentar});
+
+  final VoidCallback alReintentar;
+
+  @override
+  Widget build(BuildContext context) {
+    final esquema = Theme.of(context).colorScheme;
+    return Material(
+      color: esquema.tertiaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.only(left: AppSpacing.md),
+        child: Row(
+          children: [
+            Icon(Icons.cloud_off_outlined, size: 20, color: esquema.onTertiaryContainer),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                'Sin conexión: estás viendo tu historial guardado.',
+                style: TextStyle(color: esquema.onTertiaryContainer),
+              ),
+            ),
+            TextButton(onPressed: alReintentar, child: const Text('Reintentar')),
+          ],
+        ),
+      ),
+    );
+  }
+}

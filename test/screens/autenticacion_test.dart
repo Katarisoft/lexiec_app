@@ -35,7 +35,7 @@ void main() {
     testWidgets('con sesión guardada válida entra directo a "Mis consultas"', (tester) async {
       await montarApp(tester, repositorioBase(sesionGuardada: true));
       expect(find.byType(ConsultasScreen), findsOneWidget);
-      expect(find.text('Hola, María Pérez'), findsOneWidget);
+      expect(find.text('Aún no tienes consultas'), findsOneWidget);
     });
 
     testWidgets('sesión guardada pero rechazada (401) va al login', (tester) async {
