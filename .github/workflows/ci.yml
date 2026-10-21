@@ -37,8 +37,10 @@ jobs:
 
       - name: Auditoría de secretos
         run: |
-          # Valores literales asignados a nombres sensibles, o claves con formato conocido.
-          if git grep -nIiE "((api[_-]?key|secret|password|clave|token)['\"]?[[:space:]]*[:=][[:space:]]*['\"][^'\"]{8,}['\"])|sk-[A-Za-z0-9]{10,}|AIza[0-9A-Za-z_-]{20,}" -- lib; then
+          # Valores literales (sin espacios) asignados a nombres sensibles, o claves con formato conocido.
+          # El nombre debe empezar en límite de palabra (evita "cambiarClave") y el valor no lleva
+          # espacios (evita textos de interfaz como 'Mostrar clave').
+          if git grep -nIiE "(^|[^A-Za-z])(api[_-]?key|secret|password|clave|token)['\"]?[[:space:]]*[:=][[:space:]]*['\"][^'\"[:space:]]{8,}['\"]|sk-[A-Za-z0-9]{10,}|AIza[0-9A-Za-z_-]{20,}" -- lib; then
             echo "::error::Posible secreto en el código"; exit 1
           fi
           if git ls-files | grep -E "(^|/)\.env$"; then
