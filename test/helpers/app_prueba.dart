@@ -6,6 +6,7 @@ import 'package:lexiec/controllers/sesion_controller.dart';
 import 'package:lexiec/core/network/eventos_sesion.dart';
 import 'package:lexiec/data/models/perfil.dart';
 import 'package:lexiec/data/repositories/auth_repository.dart';
+import 'package:lexiec/data/repositories/chat_repository.dart';
 import 'package:lexiec/data/repositories/conversaciones_repository.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -13,22 +14,27 @@ class AuthRepositoryMock extends Mock implements AuthRepository {}
 
 class ConversacionesRepositoryMock extends Mock implements ConversacionesRepository {}
 
+class ChatRepositoryMock extends Mock implements ChatRepository {}
+
 final perfilDemo = Perfil(usuario: 'maria.perez', nombre: 'María Pérez', creadoEn: DateTime.utc(2026, 10, 20));
 
 /// Dependencias globales con el repositorio falso (sin almacenamiento seguro ni red).
 class BindingPrueba extends Bindings {
-  BindingPrueba(this.repositorio, this.eventos, [ConversacionesRepository? conversaciones])
-    : conversaciones = conversaciones ?? conversacionesVacias();
+  BindingPrueba(this.repositorio, this.eventos, [ConversacionesRepository? conversaciones, ChatRepository? chat])
+    : conversaciones = conversaciones ?? conversacionesVacias(),
+      chat = chat ?? ChatRepositoryMock();
 
   final AuthRepository repositorio;
   final EventosSesion eventos;
   final ConversacionesRepository conversaciones;
+  final ChatRepository chat;
 
   @override
   void dependencies() {
     Get.put<EventosSesion>(eventos);
     Get.put<AuthRepository>(repositorio);
     Get.put<ConversacionesRepository>(conversaciones);
+    Get.put<ChatRepository>(chat);
     Get.put<SesionController>(
       SesionController(repositorio: repositorio, eventos: eventos, limpiezas: [conversaciones.limpiarHistorialLocal]),
     );
@@ -51,12 +57,13 @@ Future<void> montarApp(
   AuthRepositoryMock repositorio, {
   EventosSesion? eventos,
   ConversacionesRepository? conversaciones,
+  ChatRepository? chat,
   String ruta = AppRoutes.inicio,
 }) async {
   Get.testMode = true;
   await tester.pumpWidget(
     LexiecApp(
-      bindingInicial: BindingPrueba(repositorio, eventos ?? EventosSesion(), conversaciones),
+      bindingInicial: BindingPrueba(repositorio, eventos ?? EventosSesion(), conversaciones, chat),
       rutaInicial: ruta,
     ),
   );

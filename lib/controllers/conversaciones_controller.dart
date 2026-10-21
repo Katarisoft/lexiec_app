@@ -147,6 +147,14 @@ class ConversacionesController extends GetxController {
     if (i >= 0) conversaciones[i] = conversacion;
   }
 
+  /// Tras una nueva pregunta, la consulta pasa a ser la más reciente.
+  void subirAlInicio(Conversacion conversacion) {
+    conversaciones
+      ..removeWhere((c) => c.id == conversacion.id)
+      ..insert(0, conversacion);
+    _actualizarEstadoTrasCambio();
+  }
+
   void _deshacer(Conversacion conversacion, int indice) {
     _pendientes.remove(conversacion.id)?.cancel();
     conversaciones.insert(indice.clamp(0, conversaciones.length), conversacion);

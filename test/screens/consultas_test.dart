@@ -76,7 +76,7 @@ void main() {
     await tester.tap(find.text('Nueva consulta'));
     await tester.pumpAndSettle();
     expect(find.byType(ConsultaScreen), findsOneWidget);
-    expect(find.text('Consulta sin preguntas'), findsOneWidget);
+    expect(find.text('¿Qué quieres consultar?'), findsOneWidget); // sugerencias del chat
   });
 
   testWidgets('sin conexión: muestra el historial guardado con un aviso', (tester) async {

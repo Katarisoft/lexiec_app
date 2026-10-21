@@ -5,9 +5,10 @@ import '../../app/theme/app_spacing.dart';
 import '../../controllers/consulta_controller.dart';
 import '../../controllers/view_status.dart';
 import '../../widgets/burbuja_mensaje.dart';
+import '../../widgets/chat_widgets.dart';
 import '../../widgets/estado_views.dart';
 
-/// Detalle de una consulta: preguntas y respuestas con sus fuentes.
+/// Chat de una consulta: historial con fuentes y nueva pregunta con respuesta en streaming.
 class ConsultaScreen extends GetView<ConsultaController> {
   const ConsultaScreen({super.key});
 
@@ -52,25 +53,57 @@ class ConsultaScreen extends GetView<ConsultaController> {
         () => switch (controller.estado.value) {
           ViewStatus.loading => const LoadingView(mensaje: 'Cargando consulta…'),
           ViewStatus.error => ErrorView(mensaje: controller.mensajeError.value, onReintentar: controller.cargar),
-          ViewStatus.empty => const EmptyView(
-            icono: Icons.edit_note,
-            titulo: 'Consulta sin preguntas',
-            mensaje: 'Esta consulta aún no tiene preguntas.',
-          ),
-          ViewStatus.success => Column(
+          ViewStatus.empty || ViewStatus.success => Column(
             children: [
               if (controller.sinConexion.value) AvisoSinConexion(alReintentar: controller.cargar),
               Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  itemCount: controller.mensajes.length,
-                  itemBuilder: (_, i) => BurbujaMensaje(mensaje: controller.mensajes[i]),
-                ),
+                child: controller.estado.value == ViewStatus.empty
+                    ? SugerenciasConsulta(
+                        sugerencias: ConsultaController.sugerencias,
+                        habilitado: controller.puedeEnviar,
+                        alElegir: controller.enviar,
+                      )
+                    : const _Conversacion(),
+              ),
+              CompositorPregunta(
+                controlador: controller.pregunta,
+                habilitado: controller.puedeEnviar,
+                enviando: controller.enviando.value,
+                error: controller.errorEnvio.value,
+                esperaSegundos: controller.esperaSegundos.value,
+                maximo: ConsultaController.maximoCaracteres,
+                alEnviar: controller.enviar,
               ),
             ],
           ),
         },
       ),
     );
+  }
+}
+
+/// Mensajes del más reciente (abajo) al más antiguo: la lista invertida mantiene
+/// siempre visible lo último sin desplazar a mano.
+class _Conversacion extends GetView<ConsultaController> {
+  const _Conversacion();
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      // Se leen aquí (no dentro de itemBuilder) para que Obx se suscriba y repinte con cada fragmento.
+      final mensajes = controller.mensajes.toList();
+      final escribiendo = controller.enviando.value;
+      final textoProvisional = controller.provisional.value;
+      return ListView.builder(
+        reverse: true,
+        padding: const EdgeInsets.all(AppSpacing.md),
+        itemCount: mensajes.length + (escribiendo ? 1 : 0),
+        itemBuilder: (_, i) {
+          if (escribiendo && i == 0) return BurbujaProvisional(texto: textoProvisional);
+          final indice = mensajes.length - 1 - (escribiendo ? i - 1 : i);
+          return BurbujaMensaje(key: ValueKey(mensajes[indice].id), mensaje: mensajes[indice]);
+        },
+      );
+    });
   }
 }

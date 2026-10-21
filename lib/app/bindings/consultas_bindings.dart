@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../controllers/consulta_controller.dart';
 import '../../controllers/conversaciones_controller.dart';
 import '../../controllers/sesion_controller.dart';
+import '../../data/repositories/chat_repository.dart';
 import '../../data/repositories/conversaciones_repository.dart';
 
 class ConsultasBinding extends Bindings {
@@ -21,6 +22,7 @@ class ConsultaBinding extends Bindings {
   void dependencies() => Get.lazyPut<ConsultaController>(
     () => ConsultaController(
       repositorio: Get.find<ConversacionesRepository>(),
+      chat: Get.find<ChatRepository>(),
       lista: Get.find<ConversacionesController>(),
       id: Get.parameters['id']!,
     ),

@@ -100,6 +100,7 @@ class _Lista extends GetView<ConversacionesController> {
         Expanded(
           child: Obx(() {
             final items = controller.visibles;
+            final cargandoMas = controller.cargandoMas.value; // leído aquí para que Obx se suscriba
             if (items.isEmpty) {
               return Center(
                 child: Padding(
@@ -126,7 +127,7 @@ class _Lista extends GetView<ConversacionesController> {
                   itemCount: items.length + 1,
                   itemBuilder: (_, i) {
                     if (i == items.length) {
-                      return controller.cargandoMas.value
+                      return cargandoMas
                           ? const Padding(padding: EdgeInsets.all(AppSpacing.md), child: LoadingView())
                           : const SizedBox.shrink();
                     }

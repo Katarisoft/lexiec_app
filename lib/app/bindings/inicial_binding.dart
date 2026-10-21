@@ -8,8 +8,10 @@ import '../../data/datasources/local_conversaciones_datasource.dart';
 import '../../data/datasources/local_preferencias_datasource.dart';
 import '../../data/datasources/local_tokens_datasource.dart';
 import '../../data/datasources/remote_auth_datasource.dart';
+import '../../data/datasources/remote_chat_datasource.dart';
 import '../../data/datasources/remote_conversaciones_datasource.dart';
 import '../../data/repositories/auth_repository.dart';
+import '../../data/repositories/chat_repository.dart';
 import '../../data/repositories/conversaciones_repository.dart';
 
 /// Dependencias globales (viven toda la app).
@@ -30,11 +32,13 @@ class InicialBinding extends Bindings {
       ),
       permanent: true,
     );
+    final historialLocal = LocalConversacionesDatasource(ClaveCacheSegura());
     Get.put<ConversacionesRepository>(
-      ConversacionesRepository(
-        remoto: RemoteConversacionesDatasource(Get.find<ApiClient>()),
-        local: LocalConversacionesDatasource(ClaveCacheSegura()),
-      ),
+      ConversacionesRepository(remoto: RemoteConversacionesDatasource(Get.find<ApiClient>()), local: historialLocal),
+      permanent: true,
+    );
+    Get.put<ChatRepository>(
+      ChatRepository(remoto: RemoteChatDatasource(Get.find<ApiClient>()), local: historialLocal),
       permanent: true,
     );
     Get.put<SesionController>(
