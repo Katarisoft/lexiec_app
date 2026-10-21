@@ -16,6 +16,10 @@ class Cita {
   final String? articulo;
   final String texto;
 
+  /// Nombre legible del documento: "COIP_act_feb-2021.pdf" → "COIP act feb 2021".
+  String get documento =>
+      archivo.replaceAll(RegExp(r'\.pdf$', caseSensitive: false), '').replaceAll(RegExp(r'[-_]+'), ' ').trim();
+
   /// Referencia corta para mostrar: "Art. 36 · pág. 18" o "pág. 18".
   String get referencia => articulo != null ? 'Art. $articulo · pág. $pagina' : 'pág. $pagina';
 

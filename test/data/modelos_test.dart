@@ -42,6 +42,10 @@ void main() {
     expect(Perfil.fromJson({...p.toJson(), 'nombre': 'María Pérez'}).nombreVisible, 'María Pérez');
   });
 
+  test('Cita: nombre legible del documento', () {
+    expect(Cita.fromJson({..._cita, 'archivo': 'COIP_act_feb-2021.pdf'}).documento, 'COIP act feb 2021');
+  });
+
   test('Cita: referencia con y sin artículo', () {
     expect(Cita.fromJson(_cita).referencia, 'Art. 36 · pág. 18');
     expect(Cita.fromJson({..._cita, 'articulo': null}).referencia, 'pág. 18');
