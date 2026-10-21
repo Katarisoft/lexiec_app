@@ -105,25 +105,31 @@ class _VistaLamina extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tema = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            decoration: BoxDecoration(color: tema.colorScheme.primaryContainer, shape: BoxShape.circle),
-            child: Icon(lamina.icono, size: 64, color: tema.colorScheme.onPrimaryContainer),
+    // Desplazable para letra grande o pantallas bajas; centrada cuando cabe.
+    return LayoutBuilder(
+      builder: (_, limites) => SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: limites.maxHeight),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.xl),
+                decoration: BoxDecoration(color: tema.colorScheme.primaryContainer, shape: BoxShape.circle),
+                child: Icon(lamina.icono, size: 64, color: tema.colorScheme.onPrimaryContainer),
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              Text(lamina.titulo, textAlign: TextAlign.center, style: tema.textTheme.headlineSmall),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                lamina.texto,
+                textAlign: TextAlign.center,
+                style: tema.textTheme.bodyLarge?.copyWith(color: tema.colorScheme.onSurfaceVariant),
+              ),
+            ],
           ),
-          const SizedBox(height: AppSpacing.xl),
-          Text(lamina.titulo, textAlign: TextAlign.center, style: tema.textTheme.headlineSmall),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            lamina.texto,
-            textAlign: TextAlign.center,
-            style: tema.textTheme.bodyLarge?.copyWith(color: tema.colorScheme.onSurfaceVariant),
-          ),
-        ],
+        ),
       ),
     );
   }

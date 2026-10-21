@@ -48,9 +48,11 @@ class BurbujaProvisional extends StatelessWidget {
                     child: CircularProgressIndicator(strokeWidth: 2, color: esquema.secondary),
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  Text(
-                    texto.isEmpty ? 'Buscando en las normas…' : 'Verificando las fuentes…',
-                    style: tema.textTheme.labelMedium?.copyWith(color: esquema.onSurfaceVariant),
+                  Flexible(
+                    child: Text(
+                      texto.isEmpty ? 'Buscando en las normas…' : 'Verificando las fuentes…',
+                      style: tema.textTheme.labelMedium?.copyWith(color: esquema.onSurfaceVariant),
+                    ),
                   ),
                 ],
               ),

@@ -65,7 +65,7 @@ class BurbujaMensaje extends StatelessWidget {
                   children: [
                     Icon(Icons.search_off, size: 18, color: esquema.onSurfaceVariant),
                     const SizedBox(width: AppSpacing.xs),
-                    Text('Sin respuesta en las normas', style: tema.textTheme.labelLarge),
+                    Flexible(child: Text('Sin respuesta en las normas', style: tema.textTheme.labelLarge)),
                   ],
                 ),
               ),
